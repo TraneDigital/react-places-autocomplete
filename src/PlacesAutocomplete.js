@@ -100,12 +100,18 @@ class PlacesAutocomplete extends React.Component {
 
   fetchPredictions = () => {
     const { value } = this.props;
+    let { autocompleteSessionToken } = this.state;
+    if (!autocompleteSessionToken) {
+      autocompleteSessionToken = new window.google.maps.places.AutocompleteSessionToken();
+      this.setState({ autocompleteSessionToken });
+    }
     if (value.length) {
       this.setState({ loading: true });
       this.autocompleteService.getPlacePredictions(
         {
           ...this.props.searchOptions,
           input: value,
+          sessionToken: autocompleteSessionToken,
         },
         this.autocompleteCallback
       );
@@ -126,9 +132,11 @@ class PlacesAutocomplete extends React.Component {
   };
 
   handleSelect = (address, placeId) => {
+    const { autocompleteSessionToken } = this.state;
     this.clearSuggestions();
     if (this.props.onSelect) {
-      this.props.onSelect(address, placeId);
+      this.props.onSelect(address, placeId, autocompleteSessionToken);
+      this.setState({ autocompleteSessionToken: undefined });
     } else {
       this.props.onChange(address);
     }

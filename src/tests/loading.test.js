@@ -32,8 +32,8 @@ test('loading prop check', () => {
   el.instance().fetchPredictions();
 
   // there are 2 setStates in the callback, so we end up with 4 renders
-  expect(childProp).toHaveBeenCalledTimes(4);
-  const expected = [false, true, false, false];
+  expect(childProp).toHaveBeenCalledTimes(5);
+  const expected = [false, true, false, false, false];
   childProp.mock.calls.forEach((call, i) => {
     expect(call[0]).toMatchObject({ loading: expected[i] });
   });
